@@ -1,47 +1,89 @@
-# Sleek Dynamic Pricing App
+# Pricewise — Live Global Pricing 💱
 
-A high-performance, responsive pricing table component designed with modern UI/UX principles. This project demonstrates a transition from static "spaghetti" code to a modular, data-driven architecture.
+> A SaaS pricing page with real-time exchange rates from the Frankfurter API, 6-currency support, monthly/yearly billing toggle, comparison table, FAQ accordion, and a warm gold/dark design system.
+
+![HTML](https://img.shields.io/badge/HTML5-E34F26?style=flat&logo=html5&logoColor=white)
+![CSS](https://img.shields.io/badge/CSS3-1572B6?style=flat&logo=css3&logoColor=white)
+![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat&logo=javascript&logoColor=black)
+![Frankfurter API](https://img.shields.io/badge/API-Frankfurter%20ECB-orange)
+![No Dependencies](https://img.shields.io/badge/dependencies-none-brightgreen)
+
+---
+
+## Overview
+
+Pricewise demonstrates a production-quality SaaS pricing page where prices update in real time based on live foreign exchange rates fetched from the Frankfurter API (European Central Bank data). Users can switch between 6 currencies and monthly/yearly billing with instant visual feedback — no page reload required.
+
+---
 
 ## Features
 
-- **Live Currency Conversion**: Integrates with the [Frankfurter API](https://www.frankfurter.dev/) to fetch real-time exchange rates for USD, EUR, GBP, and JPY.
-- **Dynamic Billing Logic**: Toggle between monthly and yearly billing with an automatic 20% discount calculation.
-- **Dark Mode Support**: Includes a theme-switcher with user preference persistence via `localStorage`.
-- **Responsive & Sleek UI**: Built using CSS Grid and Glassmorphism effects. Fully responsive from mobile to ultra-wide displays.
-- **Semantic & Accessible**: Uses HTML5 tags (`<main>`, `<section>`, `<label>`) for better SEO and screen-reader support.
+| Feature                     | Details                                                                         |
+| --------------------------- | ------------------------------------------------------------------------------- |
+| **Live Exchange Rates**     | Fetched from Frankfurter API on load; auto-refreshes every 5 minutes            |
+| **6 Currencies**            | USD, EUR, GBP, JPY, NGN (₦), CAD — selectable as pill buttons                   |
+| **Monthly / Yearly Toggle** | Yearly applies a 20% discount; annual total shown under each price              |
+| **Graceful Fallback**       | If the API fails, hardcoded rates are used silently — no broken UI              |
+| **Live Rate Indicator**     | Green pulsing dot + timestamp when live; muted "Fallback rates" when offline    |
+| **Price Shimmer Animation** | Numbers animate on currency/billing change                                      |
+| **Comparison Table**        | Feature-by-feature comparison across all three plans                            |
+| **FAQ Accordion**           | Smooth expand/collapse; only one open at a time                                 |
+| **Dark / Light Theme**      | Full warm theme toggle — light mode uses ivory tones, not plain white           |
+| **Instant Render**          | Renders with fallback rates immediately; live rates replace them asynchronously |
 
-## Tech Stack
+---
 
-- **HTML5**: Semantic structure.
-- **CSS3**: Custom properties (variables), Grid, Flexbox, and Glassmorphism.
-- **JavaScript (ES6+)**: Async/Await for API calls, DOM manipulation, and state management.
+## Technical Highlights
 
-## How It Works
+- **Optimistic render pattern** — page renders immediately with fallback rates, then live rates replace them without any loading state
+- **Auto-refresh** via `setInterval` every 5 minutes — pricing stays current during long sessions
+- **No-decimal formatting** for JPY and NGN via conditional `minimumFractionDigits`
+- **CSS custom properties** power the full 8-shade warm dark theme; toggling `.light` on `<body>` flips all 20+ variables at once
+- **FAQ accordion** — `max-height` CSS transition from `0` to `200px` with `overflow:hidden` — smooth without JS animation loops
+- **Playfair Display + DM Sans** — editorial serif for price numbers, geometric sans for UI labels
 
-### Data-Driven Rendering
+---
 
-The app separates content from logic. Pricing plans are stored in a JavaScript object, allowing for easy updates without touching the HTML structure.
+## Project Structure
 
-### Live Exchange Rates
-
-The app uses the `Intl.NumberFormat` API to ensure that currency symbols and decimal places are formatted correctly according to international standards.
-
-```javascript
-// Example of the live conversion logic
-let price = isYearly ? plan.usd * 0.8 : plan.usd;
-let convertedPrice = (price * rates[currency]).toLocaleString(undefined, {
-  style: "currency",
-  currency: currency,
-});
+```
+pricewise.html      ← Complete app: HTML + embedded CSS + embedded JS
 ```
 
-### Installation & Usage
+Single-file architecture demonstrates full-stack UI thinking in a self-contained unit.
 
-1. **Clone the repository:**
+---
 
-   ```bash
-   git clone https://github.com/oluwafemi00/Pricing-project.git
-   ```
+## API
 
-2. **Open the project:**
-   Simply open index.html in any modern web browser. No build steps or dependencies required!
+Uses [Frankfurter](https://www.frankfurter.dev/) — a free, open-source ECB exchange rate API. No API key required.
+
+```
+https://api.frankfurter.dev/v1/latest?base=USD
+```
+
+---
+
+## Design Decisions
+
+- **Gold accent** (`#D4A843`) on dark espresso background — warm SaaS premium feel distinct from blue/purple
+- **Pill currency buttons** instead of a `<select>` — faster to switch, more visual, keyboard-friendly
+- **Annual note under price** (e.g. "C$480/year — saving 20%") — makes the yearly value proposition tangible
+- **Featured pricing card** uses a subtle gradient and gold border — visually guides users toward the recommended plan
+
+---
+
+## Run Locally
+
+```bash
+open pricewise.html
+```
+
+---
+
+## What This Demonstrates
+
+- Integrating a third-party API with graceful degradation (fallback data)
+- Optimistic rendering for perceived performance — show something useful immediately
+- Currency formatting with `Intl.NumberFormat` across multiple locales
+- Building a complete marketing page component without any CSS framework
