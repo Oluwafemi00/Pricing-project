@@ -3,10 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Pricing — Live Global Rates</title>
+    <title>XchangeHub — Real-Time Currency Exchange Dashboard</title>
     <link
       href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,700;1,400&family=DM+Sans:wght@300;400;500&display=swap"
       rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
     />
     <style>
       /* ===== RESET ===== */
@@ -37,6 +41,7 @@
         --green: #4db87a;
         --green-dim: #0a2018;
         --red: #d45a5a;
+        --blue: #4a7fbf;
         --radius: 18px;
         --radius-sm: 10px;
       }
@@ -62,6 +67,7 @@
       body {
         height: 100%;
       }
+
       body {
         font-family: "DM Sans", sans-serif;
         font-weight: 300;
@@ -108,7 +114,7 @@
       .shell {
         position: relative;
         z-index: 1;
-        max-width: 1160px;
+        max-width: 1200px;
         margin: 0 auto;
         padding: 0 24px 80px;
       }
@@ -118,28 +124,31 @@
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 24px 0 0;
-        margin-bottom: 80px;
+        padding: 24px 0;
+        margin-bottom: 48px;
+        border-bottom: 1px solid var(--border);
       }
+
       .topbar-logo {
         font-family: "Playfair Display", serif;
-        font-size: 18px;
+        font-size: 20px;
         font-weight: 700;
         color: var(--text);
         letter-spacing: -0.3px;
       }
+
       .topbar-logo em {
         font-style: italic;
         color: var(--gold);
       }
-      .topbar-right {
+
+      .topbar-center {
         display: flex;
         align-items: center;
-        gap: 10px;
+        gap: 16px;
       }
 
-      /* LIVE RATE PILL */
-      .rate-pill {
+      .rate-status {
         display: flex;
         align-items: center;
         gap: 6px;
@@ -151,24 +160,27 @@
         font-weight: 400;
         color: var(--text3);
         letter-spacing: 0.04em;
-        transition: all 0.3s;
       }
-      .rate-pill.live {
+
+      .rate-status.live {
         border-color: rgba(77, 184, 122, 0.35);
         background: var(--green-dim);
         color: var(--green);
       }
-      .rate-dot {
+
+      .status-dot {
         width: 6px;
         height: 6px;
         border-radius: 50%;
         background: var(--text3);
         flex-shrink: 0;
       }
-      .rate-pill.live .rate-dot {
+
+      .rate-status.live .status-dot {
         background: var(--green);
         animation: pulseDot 2s infinite;
       }
+
       @keyframes pulseDot {
         0%,
         100% {
@@ -179,7 +191,12 @@
         }
       }
 
-      /* THEME TOGGLE */
+      .topbar-right {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+      }
+
       .btn-theme {
         width: 36px;
         height: 36px;
@@ -194,6 +211,7 @@
         justify-content: center;
         transition: all 0.18s;
       }
+
       .btn-theme:hover {
         background: var(--surface3);
         color: var(--text);
@@ -202,8 +220,9 @@
       /* ===== HERO ===== */
       .hero {
         text-align: center;
-        margin-bottom: 56px;
+        margin-bottom: 48px;
       }
+
       .hero-tag {
         display: inline-flex;
         align-items: center;
@@ -219,461 +238,322 @@
         color: var(--gold2);
         margin-bottom: 20px;
       }
+
       .hero-title {
         font-family: "Playfair Display", serif;
-        font-size: clamp(40px, 6vw, 72px);
+        font-size: clamp(36px, 5vw, 56px);
         font-weight: 700;
-        line-height: 1.05;
+        line-height: 1.1;
         letter-spacing: -1.5px;
         color: var(--text);
-        margin-bottom: 16px;
+        margin-bottom: 12px;
       }
+
       .hero-title em {
         font-style: italic;
         color: var(--gold);
       }
+
       .hero-sub {
-        font-size: 16px;
+        font-size: 15px;
         color: var(--text2);
         max-width: 500px;
         margin: 0 auto;
-        line-height: 1.7;
+        line-height: 1.6;
       }
 
-      /* ===== CONTROLS ===== */
-      .controls {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        gap: 10px;
-        flex-wrap: wrap;
-        margin-bottom: 48px;
-      }
-
-      /* CURRENCY SELECTOR */
-      .currency-wrap {
-        display: flex;
-        align-items: center;
-        gap: 0;
-        background: var(--surface);
-        border: 1px solid var(--border2);
-        border-radius: var(--radius-sm);
-        overflow: hidden;
-      }
-      .currency-btn {
-        padding: 10px 16px;
-        border: none;
-        background: transparent;
-        color: var(--text2);
-        font-family: "DM Sans", sans-serif;
-        font-size: 12px;
-        font-weight: 500;
-        letter-spacing: 0.06em;
-        cursor: pointer;
-        transition: all 0.18s;
-        border-right: 1px solid var(--border);
-      }
-      .currency-btn:last-child {
-        border-right: none;
-      }
-      .currency-btn.active {
-        background: var(--gold);
-        color: #0a0806;
-        font-weight: 600;
-      }
-      .currency-btn:not(.active):hover {
-        background: var(--surface2);
-        color: var(--text);
-      }
-
-      /* BILLING TOGGLE */
-      .billing-toggle {
-        display: flex;
-        align-items: center;
-        background: var(--surface);
-        border: 1px solid var(--border2);
-        border-radius: var(--radius-sm);
-        overflow: hidden;
-      }
-      .billing-btn {
-        padding: 10px 20px;
-        border: none;
-        background: transparent;
-        color: var(--text2);
-        font-family: "DM Sans", sans-serif;
-        font-size: 12px;
-        font-weight: 500;
-        letter-spacing: 0.06em;
-        cursor: pointer;
-        transition: all 0.18s;
-        position: relative;
-      }
-      .billing-btn.active {
-        background: var(--surface3);
-        color: var(--text);
-        font-weight: 600;
-      }
-      .billing-btn .save-tag {
-        position: absolute;
-        top: -6px;
-        right: -4px;
-        background: var(--green);
-        color: #0a2018;
-        font-size: 8px;
-        font-weight: 700;
-        padding: 1px 5px;
-        border-radius: 4px;
-        letter-spacing: 0.06em;
-      }
-
-      /* ===== GRID ===== */
-      .plans-grid {
-        display: grid;
-        grid-template-columns: repeat(3, 1fr);
-        gap: 16px;
-        align-items: start;
-      }
-      @media (max-width: 768px) {
-        .plans-grid {
-          grid-template-columns: 1fr;
-        }
-      }
-
-      /* ===== PLAN CARD ===== */
-      .plan-card {
+      /* ===== CONVERTER CARD ===== */
+      .converter-card {
         background: var(--surface);
         border: 1px solid var(--border);
         border-radius: var(--radius);
-        padding: 32px 28px;
-        position: relative;
-        overflow: hidden;
-        transition:
-          border-color 0.2s,
-          transform 0.2s,
-          box-shadow 0.2s;
-        display: flex;
-        flex-direction: column;
-        gap: 24px;
-      }
-      .plan-card:hover {
-        border-color: var(--border2);
-        transform: translateY(-4px);
+        padding: 32px;
+        margin-bottom: 48px;
         box-shadow: 0 16px 40px rgba(0, 0, 0, 0.2);
       }
-      .plan-card.featured {
-        border-color: rgba(212, 168, 67, 0.35);
-        background: linear-gradient(
-          145deg,
-          var(--surface) 0%,
-          var(--gold-dim) 100%
-        );
-        box-shadow:
-          0 0 0 1px rgba(212, 168, 67, 0.1),
-          0 20px 60px rgba(0, 0, 0, 0.25);
-      }
-      .plan-card.featured:hover {
-        border-color: rgba(212, 168, 67, 0.5);
-        box-shadow:
-          0 0 0 1px rgba(212, 168, 67, 0.2),
-          0 24px 60px rgba(0, 0, 0, 0.3),
-          0 0 40px var(--gold-glow);
+
+      .converter-grid {
+        display: grid;
+        grid-template-columns: 1fr auto 1fr;
+        gap: 16px;
+        align-items: end;
+        margin-bottom: 24px;
       }
 
-      /* Card top line for featured */
-      .plan-card.featured::before {
-        content: "";
-        position: absolute;
-        top: 0;
-        left: 0;
-        right: 0;
-        height: 2px;
-        background: linear-gradient(
-          90deg,
-          transparent,
-          var(--gold),
-          transparent
-        );
-      }
-
-      /* POPULAR BADGE */
-      .popular-badge {
-        position: absolute;
-        top: 18px;
-        right: 18px;
-        background: var(--gold);
-        color: #0a0806;
-        font-size: 9px;
-        font-weight: 700;
-        letter-spacing: 0.12em;
-        text-transform: uppercase;
-        padding: 4px 10px;
-        border-radius: 4px;
-      }
-
-      /* PLAN HEADER */
-      .plan-name {
-        font-size: 11px;
-        font-weight: 500;
-        letter-spacing: 0.16em;
-        text-transform: uppercase;
-        color: var(--text3);
-        margin-bottom: 8px;
-      }
-      .plan-card.featured .plan-name {
-        color: var(--gold2);
-      }
-
-      /* PRICE BLOCK */
-      .price-block {
-        position: relative;
-      }
-      .price-currency {
-        font-family: "Playfair Display", serif;
-        font-size: 20px;
-        font-weight: 400;
-        color: var(--text2);
-        vertical-align: super;
-        line-height: 1;
-        margin-right: 2px;
-      }
-      .price-amount {
-        font-family: "Playfair Display", serif;
-        font-size: 56px;
-        font-weight: 700;
-        letter-spacing: -2px;
-        line-height: 1;
-        color: var(--text);
-        transition: all 0.3s;
-      }
-      .plan-card.featured .price-amount {
-        color: var(--gold);
-      }
-      .price-period {
-        display: block;
-        font-size: 11px;
-        color: var(--text3);
-        margin-top: 6px;
-        letter-spacing: 0.04em;
-      }
-      .price-annual-note {
-        display: inline-flex;
-        align-items: center;
-        gap: 4px;
-        font-size: 11px;
-        color: var(--green);
-        margin-top: 4px;
-      }
-
-      /* UPDATING SHIMMER */
-      .price-amount.updating {
-        animation: shimmer 0.5s ease;
-      }
-      @keyframes shimmer {
-        0% {
-          opacity: 1;
+      @media (max-width: 768px) {
+        .converter-grid {
+          grid-template-columns: 1fr;
+          gap: 20px;
         }
-        40% {
-          opacity: 0.3;
-        }
-        100% {
-          opacity: 1;
+
+        .swap-btn {
+          order: 2;
+          width: 100%;
         }
       }
 
-      /* FEATURES */
-      .feature-list {
-        list-style: none;
+      .input-group {
         display: flex;
         flex-direction: column;
-        gap: 10px;
-      }
-      .feature-item {
-        display: flex;
-        align-items: flex-start;
-        gap: 10px;
-        font-size: 13px;
-        color: var(--text2);
-        line-height: 1.4;
-      }
-      .feature-check {
-        width: 16px;
-        height: 16px;
-        border-radius: 4px;
-        background: var(--green-dim);
-        border: 1px solid rgba(77, 184, 122, 0.2);
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        flex-shrink: 0;
-        margin-top: 1px;
-        font-size: 9px;
-        color: var(--green);
-      }
-      .plan-card.featured .feature-check {
-        background: var(--gold-dim);
-        border-color: rgba(212, 168, 67, 0.2);
-        color: var(--gold2);
+        gap: 8px;
       }
 
-      /* CTA BUTTON */
-      .btn-plan {
+      .input-label {
+        font-size: 11px;
+        font-weight: 500;
+        letter-spacing: 0.06em;
+        text-transform: uppercase;
+        color: var(--text3);
+      }
+
+      .input-wrapper {
         display: flex;
         align-items: center;
-        justify-content: center;
         gap: 8px;
-        width: 100%;
-        height: 48px;
+        background: var(--surface2);
+        border: 1px solid var(--border2);
         border-radius: var(--radius-sm);
+        padding: 0 12px;
+      }
+
+      .input-wrapper input {
+        flex: 1;
+        padding: 12px 0;
         border: none;
+        background: transparent;
+        color: var(--text);
+        font-family: "DM Sans", sans-serif;
+        font-size: 16px;
+        font-weight: 500;
+      }
+
+      .input-wrapper input::placeholder {
+        color: var(--text3);
+      }
+
+      .currency-select {
+        background: transparent;
+        border: none;
+        color: var(--text);
         font-family: "DM Sans", sans-serif;
         font-size: 13px;
         font-weight: 500;
-        letter-spacing: 0.04em;
         cursor: pointer;
-        transition: all 0.18s;
-      }
-      .btn-plan-ghost {
-        background: transparent;
-        border: 1px solid var(--border2);
-        color: var(--text2);
-      }
-      .btn-plan-ghost:hover {
-        border-color: var(--text3);
-        color: var(--text);
-      }
-      .btn-plan-primary {
-        background: var(--gold);
-        color: #0a0806;
-        font-weight: 600;
-        box-shadow: 0 4px 16px rgba(212, 168, 67, 0.2);
-      }
-      .btn-plan-primary:hover {
-        background: var(--gold2);
-        box-shadow: 0 6px 24px rgba(212, 168, 67, 0.35);
-        transform: translateY(-1px);
-      }
-      .btn-plan-primary:active {
-        transform: scale(0.98);
+        padding: 0;
       }
 
-      /* ===== COMPARISON TABLE ===== */
-      .compare-section {
-        margin-top: 80px;
-      }
-      .compare-title {
-        font-family: "Playfair Display", serif;
-        font-size: 32px;
-        font-weight: 700;
-        font-style: italic;
-        color: var(--text);
-        margin-bottom: 24px;
-        text-align: center;
-      }
-      .compare-table {
-        width: 100%;
-        border-collapse: collapse;
+      .currency-select option {
         background: var(--surface);
-        border: 1px solid var(--border);
-        border-radius: var(--radius);
-        overflow: hidden;
-      }
-      .compare-table th {
-        padding: 14px 20px;
-        font-size: 10px;
-        font-weight: 500;
-        letter-spacing: 0.14em;
-        text-transform: uppercase;
-        color: var(--text3);
-        background: var(--surface2);
-        border-bottom: 1px solid var(--border);
-        text-align: left;
-      }
-      .compare-table th:not(:first-child) {
-        text-align: center;
-      }
-      .compare-table td {
-        padding: 13px 20px;
-        font-size: 13px;
-        color: var(--text2);
-        border-bottom: 1px solid var(--border);
-      }
-      .compare-table tr:last-child td {
-        border-bottom: none;
-      }
-      .compare-table td:not(:first-child) {
-        text-align: center;
-      }
-      .compare-table tbody tr:hover {
-        background: var(--surface2);
-      }
-      .compare-table .col-featured {
-        background: rgba(212, 168, 67, 0.03);
-      }
-      .check-yes {
-        color: var(--gold);
-        font-size: 15px;
-      }
-      .check-no {
-        color: var(--text3);
-        font-size: 15px;
+        color: var(--text);
       }
 
-      /* ===== FAQ ===== */
-      .faq-section {
-        margin-top: 80px;
-        max-width: 640px;
-        margin-left: auto;
-        margin-right: auto;
+      .swap-btn {
+        width: 48px;
+        height: 48px;
+        border-radius: 8px;
+        border: 1px solid var(--border2);
+        background: var(--surface2);
+        color: var(--text2);
+        font-size: 18px;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        transition: all 0.2s;
       }
-      .faq-title {
-        font-family: "Playfair Display", serif;
-        font-size: 32px;
-        font-weight: 700;
-        font-style: italic;
-        text-align: center;
-        color: var(--text);
-        margin-bottom: 24px;
+
+      .swap-btn:hover {
+        background: var(--surface3);
+        color: var(--gold);
+        transform: scale(1.05);
       }
-      .faq-item {
-        border-bottom: 1px solid var(--border);
-      }
-      .faq-q {
+
+      .rate-display {
         display: flex;
         align-items: center;
         justify-content: space-between;
-        padding: 18px 0;
-        cursor: pointer;
-        font-size: 14px;
-        font-weight: 500;
+        padding: 12px 16px;
+        background: var(--surface2);
+        border-radius: var(--radius-sm);
+        font-size: 13px;
+      }
+
+      .rate-display em {
+        color: var(--gold);
+        font-style: italic;
+        font-weight: 600;
+      }
+
+      /* ===== WATCHLIST ===== */
+      .watchlist-section {
+        margin-bottom: 48px;
+      }
+
+      .section-title {
+        font-family: "Playfair Display", serif;
+        font-size: 24px;
+        font-weight: 700;
+        font-style: italic;
         color: var(--text);
+        margin-bottom: 20px;
+      }
+
+      .watchlist-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
         gap: 16px;
       }
-      .faq-q:hover {
-        color: var(--gold);
+
+      .rate-card {
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        padding: 16px;
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        cursor: pointer;
+        transition: all 0.2s;
       }
-      .faq-arrow {
-        font-size: 16px;
-        color: var(--text3);
-        transition: transform 0.25s;
-        flex-shrink: 0;
+
+      .rate-card:hover {
+        border-color: var(--border2);
+        background: var(--surface2);
+        transform: translateY(-2px);
       }
-      .faq-item.open .faq-arrow {
-        transform: rotate(45deg);
-        color: var(--gold);
+
+      .rate-card-header {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
       }
-      .faq-a {
-        max-height: 0;
-        overflow: hidden;
+
+      .rate-pair {
         font-size: 13px;
-        color: var(--text2);
-        line-height: 1.7;
-        transition:
-          max-height 0.35s ease,
-          padding 0.25s;
+        font-weight: 600;
+        color: var(--text);
       }
-      .faq-item.open .faq-a {
-        max-height: 200px;
-        padding-bottom: 18px;
+
+      .rate-star {
+        font-size: 14px;
+        cursor: pointer;
+        opacity: 0.5;
+        transition: all 0.2s;
+      }
+
+      .rate-star.active {
+        color: var(--gold);
+        opacity: 1;
+      }
+
+      .rate-value {
+        font-size: 18px;
+        font-weight: 600;
+        color: var(--gold);
+      }
+
+      .rate-change {
+        font-size: 11px;
+        font-weight: 500;
+        padding: 2px 6px;
+        border-radius: 4px;
+        width: fit-content;
+      }
+
+      .rate-change.up {
+        background: var(--green-dim);
+        color: var(--green);
+      }
+
+      .rate-change.down {
+        background: rgba(212, 90, 90, 0.1);
+        color: var(--red);
+      }
+
+      /* ===== HISTORY ===== */
+      .history-section {
+        margin-bottom: 48px;
+      }
+
+      .history-grid {
+        display: grid;
+        gap: 12px;
+      }
+
+      .history-item {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 12px 16px;
+        background: var(--surface);
+        border: 1px solid var(--border);
+        border-radius: var(--radius-sm);
+        font-size: 13px;
+      }
+
+      .history-item:hover {
+        background: var(--surface2);
+      }
+
+      .history-left {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex: 1;
+      }
+
+      .history-icon {
+        width: 36px;
+        height: 36px;
+        border-radius: 8px;
+        background: var(--gold-dim);
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--gold2);
+        font-size: 16px;
+      }
+
+      .history-details {
+        display: flex;
+        flex-direction: column;
+        gap: 2px;
+      }
+
+      .history-pair {
+        font-weight: 600;
+        color: var(--text);
+      }
+
+      .history-time {
+        font-size: 11px;
+        color: var(--text3);
+      }
+
+      .history-result {
+        display: flex;
+        align-items: center;
+        gap: 8px;
+      }
+
+      .history-amount {
+        font-weight: 600;
+        color: var(--gold);
+      }
+
+      .history-delete {
+        width: 24px;
+        height: 24px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        cursor: pointer;
+        color: var(--text3);
+        transition: all 0.2s;
+      }
+
+      .history-delete:hover {
+        color: var(--red);
       }
 
       /* ===== FOOTER ===== */
@@ -683,37 +563,56 @@
         border-top: 1px solid var(--border);
         text-align: center;
       }
+
       .footer-text {
         font-size: 12px;
         color: var(--text3);
       }
+
       .footer-text a {
         color: var(--gold2);
         text-decoration: none;
       }
+
       .footer-text a:hover {
         text-decoration: underline;
       }
 
       /* ===== RESPONSIVE ===== */
       @media (max-width: 520px) {
-        .controls {
-          flex-direction: column;
-          align-items: stretch;
+        .shell {
+          padding: 0 16px 60px;
         }
-        .currency-wrap,
-        .billing-toggle {
-          justify-content: center;
+
+        .converter-card {
+          padding: 24px;
         }
+
         .hero-title {
-          font-size: 36px;
+          font-size: 28px;
         }
-        .compare-table {
-          font-size: 11px;
+
+        .watchlist-grid {
+          grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
         }
-        .compare-table th,
-        .compare-table td {
-          padding: 10px 12px;
+      }
+
+      /* Loading state */
+      .loading {
+        opacity: 0.6;
+        pointer-events: none;
+      }
+
+      .skeleton {
+        animation: skeleton-loading 1s infinite alternate;
+      }
+
+      @keyframes skeleton-loading {
+        0% {
+          background-color: var(--surface2);
+        }
+        100% {
+          background-color: var(--surface3);
         }
       }
     </style>
@@ -722,12 +621,14 @@
     <div class="shell">
       <!-- TOPBAR -->
       <div class="topbar">
-        <div class="topbar-logo">Price<em>wise</em></div>
-        <div class="topbar-right">
-          <div class="rate-pill" id="ratePill">
-            <span class="rate-dot"></span>
-            <span id="rateLabel">Fetching rates…</span>
+        <div class="topbar-logo">X<em>change</em>Hub</div>
+        <div class="topbar-center">
+          <div class="rate-status" id="rateStatus">
+            <span class="status-dot"></span>
+            <span id="statusLabel">Fetching rates…</span>
           </div>
+        </div>
+        <div class="topbar-right">
           <button class="btn-theme" id="themeBtn" title="Toggle theme">
             ☀
           </button>
@@ -737,143 +638,126 @@
       <!-- HERO -->
       <div class="hero">
         <div class="hero-tag">
-          <span>◎</span> Live Exchange Rates · Auto-Updated
+          <span>◎</span> Live Exchange Rates · Real-Time Updates
         </div>
         <h1 class="hero-title">
-          Simple, <em>transparent</em><br />pricing for everyone
+          Convert currency<br /><em>instantly</em> and accurately
         </h1>
         <p class="hero-sub">
-          Pay in your local currency. Rates update in real time from global
-          forex markets. No hidden fees.
+          Track exchange rates across 150+ currencies with real-time data from
+          global forex markets. Convert, track, and save your favorite pairs.
         </p>
       </div>
 
-      <!-- CONTROLS -->
-      <div class="controls">
-        <div class="currency-wrap" id="currencyWrap">
-          <button class="currency-btn active" data-currency="USD">$ USD</button>
-          <button class="currency-btn" data-currency="EUR">€ EUR</button>
-          <button class="currency-btn" data-currency="GBP">£ GBP</button>
-          <button class="currency-btn" data-currency="JPY">¥ JPY</button>
-          <button class="currency-btn" data-currency="NGN">₦ NGN</button>
-          <button class="currency-btn" data-currency="CAD">C$ CAD</button>
+      <!-- CONVERTER CARD -->
+      <div class="converter-card">
+        <div class="converter-grid">
+          <div class="input-group">
+            <label class="input-label">From</label>
+            <div class="input-wrapper">
+              <input
+                type="number"
+                id="fromAmount"
+                placeholder="Enter amount"
+                value="1"
+                min="0"
+              />
+              <select id="fromCurrency" class="currency-select">
+                <option>USD</option>
+              </select>
+            </div>
+          </div>
+
+          <button class="swap-btn" id="swapBtn" title="Swap currencies">
+            ⇄
+          </button>
+
+          <div class="input-group">
+            <label class="input-label">To</label>
+            <div class="input-wrapper">
+              <input type="text" id="toAmount" placeholder="—" readonly />
+              <select id="toCurrency" class="currency-select">
+                <option>EUR</option>
+              </select>
+            </div>
+          </div>
         </div>
-        <div class="billing-toggle">
-          <button class="billing-btn active" data-billing="monthly">
-            Monthly
-          </button>
-          <button class="billing-btn" data-billing="yearly">
-            Yearly
-            <span class="save-tag">−20%</span>
-          </button>
+
+        <div class="rate-display">
+          <span>1 <strong id="rateFrom">USD</strong> =</span>
+          <span
+            ><em id="rateValue">—</em> <strong id="rateTo">EUR</strong></span
+          >
         </div>
       </div>
 
-      <!-- PLANS GRID -->
-      <div class="plans-grid" id="plansGrid"></div>
-
-      <!-- COMPARISON TABLE -->
-      <div class="compare-section">
-        <h2 class="compare-title">Compare plans</h2>
-        <table class="compare-table">
-          <thead>
-            <tr>
-              <th>Feature</th>
-              <th>Starter</th>
-              <th class="col-featured">Pro</th>
-              <th>Expert</th>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>Projects</td>
-              <td>3</td>
-              <td class="col-featured">Unlimited</td>
-              <td>Unlimited</td>
-            </tr>
-            <tr>
-              <td>Team members</td>
-              <td>1</td>
-              <td class="col-featured">5</td>
-              <td>Unlimited</td>
-            </tr>
-            <tr>
-              <td>Storage</td>
-              <td>5 GB</td>
-              <td class="col-featured">50 GB</td>
-              <td>500 GB</td>
-            </tr>
-            <tr>
-              <td>API access</td>
-              <td><span class="check-no">—</span></td>
-              <td class="col-featured"><span class="check-yes">✓</span></td>
-              <td><span class="check-yes">✓</span></td>
-            </tr>
-            <tr>
-              <td>Priority support</td>
-              <td><span class="check-no">—</span></td>
-              <td class="col-featured"><span class="check-yes">✓</span></td>
-              <td><span class="check-yes">✓</span></td>
-            </tr>
-            <tr>
-              <td>Custom domain</td>
-              <td><span class="check-no">—</span></td>
-              <td class="col-featured"><span class="check-no">—</span></td>
-              <td><span class="check-yes">✓</span></td>
-            </tr>
-            <tr>
-              <td>SLA guarantee</td>
-              <td><span class="check-no">—</span></td>
-              <td class="col-featured"><span class="check-no">—</span></td>
-              <td><span class="check-yes">✓</span></td>
-            </tr>
-          </tbody>
-        </table>
+      <!-- WATCHLIST -->
+      <div class="watchlist-section">
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+          "
+        >
+          <h2 class="section-title">Popular pairs</h2>
+          <button
+            id="showFavoritesOnly"
+            style="
+              background: var(--surface);
+              border: 1px solid var(--border2);
+              padding: 6px 14px;
+              border-radius: 6px;
+              font-size: 11px;
+              color: var(--text2);
+              cursor: pointer;
+              transition: all 0.2s;
+              font-weight: 500;
+            "
+            title="Show only favorites"
+          >
+            ★ Favorites
+          </button>
+        </div>
+        <div class="watchlist-grid" id="watchlistGrid"></div>
       </div>
 
-      <!-- FAQ -->
-      <div class="faq-section">
-        <h2 class="faq-title">Frequently asked</h2>
-
-        <div class="faq-item">
-          <div class="faq-q">
-            How are exchange rates calculated? <span class="faq-arrow">+</span>
-          </div>
-          <div class="faq-a">
-            We fetch live exchange rates from the Frankfurter API, which sources
-            data from the European Central Bank. Rates are refreshed every time
-            you load the page. If the API is unavailable, we fall back to recent
-            cached rates.
-          </div>
+      <!-- HISTORY -->
+      <div class="history-section">
+        <div
+          style="
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+          "
+        >
+          <h2 class="section-title">Conversion history</h2>
+          <button
+            id="clearHistory"
+            style="
+              background: transparent;
+              border: 1px solid var(--red);
+              padding: 6px 14px;
+              border-radius: 6px;
+              font-size: 11px;
+              color: var(--red);
+              cursor: pointer;
+              transition: all 0.2s;
+              font-weight: 500;
+            "
+            title="Clear history"
+          >
+            Clear
+          </button>
         </div>
-        <div class="faq-item">
-          <div class="faq-q">
-            Can I switch plans at any time? <span class="faq-arrow">+</span>
-          </div>
-          <div class="faq-a">
-            Yes. You can upgrade or downgrade at any time. Upgrades take effect
-            immediately; downgrades take effect at the end of your current
-            billing cycle. We'll prorate any difference automatically.
-          </div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-q">
-            What payment methods do you accept? <span class="faq-arrow">+</span>
-          </div>
-          <div class="faq-a">
-            We accept all major credit and debit cards (Visa, Mastercard, Amex),
-            PayPal, and bank transfers for annual plans. Invoicing is available
-            for Expert tier customers.
-          </div>
-        </div>
-        <div class="faq-item">
-          <div class="faq-q">
-            Is there a free trial? <span class="faq-arrow">+</span>
-          </div>
-          <div class="faq-a">
-            Every plan comes with a 14-day free trial — no credit card required.
-            Cancel any time during the trial and you won't be charged.
-          </div>
+        <div class="history-grid" id="historyGrid">
+          <p
+            style="color: var(--text3); text-align: center; padding: 40px 20px"
+          >
+            No conversions yet. Start by converting currencies above.
+          </p>
         </div>
       </div>
 
@@ -882,155 +766,40 @@
         <p class="footer-text">
           Exchange rates powered by
           <a href="https://www.frankfurter.dev" target="_blank">Frankfurter</a>
-          · All prices exclude applicable taxes · <a href="#">Terms</a> ·
-          <a href="#">Privacy</a>
+          (European Central Bank) · Updated every minute ·
+          <a href="#">Privacy</a> ·
+          <a href="#">Terms</a>
         </p>
       </div>
     </div>
 
     <script>
       // ─── STATE ───────────────────────────────────────────────────
-      let rates = {
-        USD: 1,
-        EUR: 0.92,
-        GBP: 0.78,
-        JPY: 150,
-        NGN: 1600,
-        CAD: 1.36,
-      };
-      let currency = "USD";
-      let billing = "monthly";
+      let rates = {};
+      let favorites =
+        JSON.parse(localStorage.getItem("xchange-favorites")) || [];
+      let history = JSON.parse(localStorage.getItem("xchange-history")) || [];
       let ratesLive = false;
+      let allCurrencies = [];
+      let showFavoritesOnly = false;
 
-      // ─── PLANS ───────────────────────────────────────────────────
-      const plans = [
-        {
-          id: "starter",
-          name: "Starter",
-          usd: 9,
-          featured: false,
-          desc: "Perfect for solo creators and small projects just getting started.",
-          features: [
-            "3 projects",
-            "1 team member",
-            "5 GB storage",
-            "Email support",
-            "Basic analytics",
-          ],
-        },
-        {
-          id: "pro",
-          name: "Pro",
-          usd: 29,
-          featured: true,
-          desc: "The sweet spot for growing teams who need more power and flexibility.",
-          features: [
-            "Unlimited projects",
-            "5 team members",
-            "50 GB storage",
-            "API access",
-            "Priority support",
-            "Advanced analytics",
-          ],
-        },
-        {
-          id: "expert",
-          name: "Expert",
-          usd: 99,
-          featured: false,
-          desc: "Enterprise-grade features with dedicated support and SLA guarantees.",
-          features: [
-            "Everything in Pro",
-            "Unlimited members",
-            "500 GB storage",
-            "Custom domain",
-            "Dedicated support",
-            "SLA guarantee",
-          ],
-        },
+      const popularPairs = [
+        "EURUSD",
+        "GBPUSD",
+        "USDJPY",
+        "AUDUSD",
+        "NZDUSD",
+        "USDCAD",
+        "USDCHF",
+        "USDCNY",
+        "USDINR",
+        "USDNGN",
       ];
 
-      // Currency symbols
-      const symbols = {
-        USD: "$",
-        EUR: "€",
-        GBP: "£",
-        JPY: "¥",
-        NGN: "₦",
-        CAD: "C$",
-      };
-
-      // ─── FORMAT PRICE ────────────────────────────────────────────
-      function formatPrice(usd) {
-        const monthly = billing === "yearly" ? usd * 0.8 : usd;
-        const converted = monthly * (rates[currency] || 1);
-        const sym = symbols[currency] || currency + " ";
-
-        // No decimals for JPY and NGN
-        const decimals = ["JPY", "NGN"].includes(currency) ? 0 : 2;
-        return {
-          sym,
-          amount: converted.toLocaleString("en-US", {
-            minimumFractionDigits: decimals,
-            maximumFractionDigits: decimals,
-          }),
-          annual: (converted * 12).toLocaleString("en-US", {
-            minimumFractionDigits: 0,
-            maximumFractionDigits: 0,
-          }),
-        };
-      }
-
-      // ─── RENDER PLANS ────────────────────────────────────────────
-      function renderPlans(animate = false) {
-        const grid = document.getElementById("plansGrid");
-
-        grid.innerHTML = plans
-          .map((plan) => {
-            const p = formatPrice(plan.usd);
-            const isYearly = billing === "yearly";
-
-            return `
-      <div class="plan-card${plan.featured ? " featured" : ""}">
-        ${plan.featured ? '<span class="popular-badge">Most Popular</span>' : ""}
-
-        <div>
-          <div class="plan-name">${plan.name}</div>
-          <div class="price-block">
-            <span class="price-currency">${p.sym}</span><span class="price-amount${animate ? " updating" : ""}" id="price-${plan.id}">${p.amount}</span>
-            <span class="price-period">${isYearly ? "per month, billed annually" : "per month"}</span>
-            ${isYearly ? `<span class="price-annual-note">✓ ${p.sym}${p.annual} / year — saving 20%</span>` : ""}
-          </div>
-        </div>
-
-        <p style="font-size:13px;color:var(--text2);line-height:1.6">${plan.desc}</p>
-
-        <ul class="feature-list">
-          ${plan.features
-            .map(
-              (f) => `
-            <li class="feature-item">
-              <span class="feature-check">✓</span>
-              <span>${f}</span>
-            </li>
-          `,
-            )
-            .join("")}
-        </ul>
-
-        <button class="btn-plan ${plan.featured ? "btn-plan-primary" : "btn-plan-ghost"}">
-          ${plan.featured ? "Get started →" : "Choose plan"}
-        </button>
-      </div>
-    `;
-          })
-          .join("");
-      }
-
-      // ─── FETCH LIVE RATES ────────────────────────────────────────
+      // ─── FETCH RATES ──────────────────────────────────────────────
       async function fetchRates() {
-        const pill = document.getElementById("ratePill");
-        const rateLabel = document.getElementById("rateLabel");
+        const statusEl = document.getElementById("rateStatus");
+        const statusLabel = document.getElementById("statusLabel");
 
         try {
           const res = await fetch(
@@ -1039,78 +808,284 @@
           if (!res.ok) throw new Error("API error");
           const data = await res.json();
 
-          // Merge (Frankfurter doesn't include USD itself)
           rates = { USD: 1, ...data.rates };
-
-          // Add NGN fallback if not in response
-          if (!rates.NGN) rates.NGN = 1600;
+          allCurrencies = Object.keys(rates).sort();
 
           ratesLive = true;
-          pill.classList.add("live");
+          statusEl.classList.add("live");
           const ts = new Date().toLocaleTimeString([], {
             hour: "2-digit",
             minute: "2-digit",
           });
-          rateLabel.textContent = `Live · Updated ${ts}`;
-          renderPlans(true);
+          statusLabel.textContent = `Live · Updated ${ts}`;
+
+          // Persist to localStorage for offline fallback
+          localStorage.setItem("xchange-rates", JSON.stringify(rates));
+          localStorage.setItem("xchange-timestamp", ts);
+
+          populateCurrencySelects();
+          convert();
+          renderWatchlist();
         } catch (err) {
-          console.warn("Using fallback rates:", err);
-          pill.classList.remove("live");
-          rateLabel.textContent = "Fallback rates";
-          renderPlans(false);
+          console.warn("Using cached rates:", err);
+          const cached = localStorage.getItem("xchange-rates");
+          if (cached) {
+            rates = JSON.parse(cached);
+            allCurrencies = Object.keys(rates).sort();
+            statusEl.classList.remove("live");
+            statusLabel.textContent =
+              "Using cached rates · " +
+              localStorage.getItem("xchange-timestamp");
+            populateCurrencySelects();
+            convert();
+            renderWatchlist();
+          }
         }
       }
 
-      // ─── CURRENCY BUTTONS ────────────────────────────────────────
-      document.getElementById("currencyWrap").addEventListener("click", (e) => {
-        const btn = e.target.closest(".currency-btn");
-        if (!btn) return;
+      // ─── POPULATE CURRENCY SELECTS ────────────────────────────────
+      function populateCurrencySelects() {
+        const fromSelect = document.getElementById("fromCurrency");
+        const toSelect = document.getElementById("toCurrency");
+
+        fromSelect.innerHTML = allCurrencies
+          .map((curr) => `<option value="${curr}">${curr}</option>`)
+          .join("");
+
+        toSelect.innerHTML = allCurrencies
+          .map((curr) => `<option value="${curr}">${curr}</option>`)
+          .join("");
+
+        fromSelect.value = "USD";
+        toSelect.value = "EUR";
+      }
+
+      // ─── FORMAT NUMBER ────────────────────────────────────────────
+      function formatNumber(num) {
+        if (Math.abs(num) >= 1000000) {
+          return (num / 1000000).toFixed(2) + "M";
+        }
+        if (Math.abs(num) >= 1000) {
+          return (num / 1000).toFixed(2) + "K";
+        }
+        return num.toFixed(2);
+      }
+
+      // ─── CONVERT ──────────────────────────────────────────────────
+      function convert() {
+        const fromAmount = parseFloat(
+          document.getElementById("fromAmount").value,
+        );
+        const fromCurrency = document.getElementById("fromCurrency").value;
+        const toCurrency = document.getElementById("toCurrency").value;
+
+        if (!fromAmount || fromAmount <= 0) {
+          document.getElementById("toAmount").value = "";
+          document.getElementById("rateValue").textContent = "—";
+          return;
+        }
+
+        const fromRate = rates[fromCurrency] || 1;
+        const toRate = rates[toCurrency] || 1;
+        const result = (fromAmount * (toRate / fromRate)).toFixed(2);
+
+        document.getElementById("toAmount").value = result;
+        document.getElementById("rateValue").textContent = (
+          toRate / fromRate
+        ).toFixed(4);
+        document.getElementById("rateFrom").textContent = fromCurrency;
+        document.getElementById("rateTo").textContent = toCurrency;
+      }
+
+      // ─── SWAP CURRENCIES ──────────────────────────────────────────
+      function swapCurrencies() {
+        const fromSelect = document.getElementById("fromCurrency");
+        const toSelect = document.getElementById("toCurrency");
+        const temp = fromSelect.value;
+        fromSelect.value = toSelect.value;
+        toSelect.value = temp;
+        convert();
+      }
+
+      // ─── SAVE TO HISTORY ──────────────────────────────────────────
+      function saveToHistory() {
+        const fromAmount = parseFloat(
+          document.getElementById("fromAmount").value,
+        );
+        const toAmount = parseFloat(document.getElementById("toAmount").value);
+        const fromCurrency = document.getElementById("fromCurrency").value;
+        const toCurrency = document.getElementById("toCurrency").value;
+
+        if (!fromAmount || !toAmount) return;
+
+        const entry = {
+          id: Date.now(),
+          fromAmount,
+          toAmount,
+          fromCurrency,
+          toCurrency,
+          timestamp: new Date(),
+        };
+
+        history.unshift(entry);
+        history = history.slice(0, 50); // Keep last 50
+        localStorage.setItem("xchange-history", JSON.stringify(history));
+        renderHistory();
+      }
+
+      // ─── RENDER WATCHLIST ─────────────────────────────────────────
+      function renderWatchlist() {
+        const grid = document.getElementById("watchlistGrid");
+        const pairs = showFavoritesOnly ? favorites : popularPairs.slice(0, 12);
+
+        if (pairs.length === 0) {
+          grid.innerHTML =
+            '<p style="grid-column: 1/-1; text-align: center; color: var(--text3); padding: 40px">No favorite pairs yet</p>';
+          return;
+        }
+
+        grid.innerHTML = pairs
+          .map((pair) => {
+            const from = pair.substring(0, 3);
+            const to = pair.substring(3, 6);
+            const isFavorite = favorites.includes(pair);
+            const rate = (rates[to] / rates[from]).toFixed(4);
+
+            return `
+        <div class="rate-card">
+          <div class="rate-card-header">
+            <span class="rate-pair">${from}/${to}</span>
+            <span class="rate-star${isFavorite ? " active" : ""}" onclick="toggleFavorite('${pair}')" title="Add to favorites">★</span>
+          </div>
+          <div class="rate-value">${rate}</div>
+          <div style="font-size: 10px; color: var(--text3)">
+            1 ${from} = ${rate} ${to}
+          </div>
+        </div>
+      `;
+          })
+          .join("");
+      }
+
+      // ─── TOGGLE FAVORITE ──────────────────────────────────────────
+      function toggleFavorite(pair) {
+        if (favorites.includes(pair)) {
+          favorites = favorites.filter((p) => p !== pair);
+        } else {
+          favorites.push(pair);
+        }
+        localStorage.setItem("xchange-favorites", JSON.stringify(favorites));
+        renderWatchlist();
+      }
+
+      // ─── RENDER HISTORY ───────────────────────────────────────────
+      function renderHistory() {
+        const grid = document.getElementById("historyGrid");
+
+        if (history.length === 0) {
+          grid.innerHTML =
+            '<p style="color: var(--text3); text-align: center; padding: 40px 20px;">No conversions yet. Start by converting currencies above.</p>';
+          return;
+        }
+
+        grid.innerHTML = history
+          .map((entry) => {
+            const date = new Date(entry.timestamp);
+            const time = date.toLocaleTimeString([], {
+              hour: "2-digit",
+              minute: "2-digit",
+            });
+
+            return `
+        <div class="history-item">
+          <div class="history-left">
+            <div class="history-icon">💱</div>
+            <div class="history-details">
+              <div class="history-pair">${entry.fromCurrency} → ${entry.toCurrency}</div>
+              <div class="history-time">${time}</div>
+            </div>
+          </div>
+          <div class="history-result">
+            <span class="history-amount">${entry.toAmount} ${entry.toCurrency}</span>
+          </div>
+          <div class="history-delete" onclick="deleteHistory(${entry.id})" title="Delete">×</div>
+        </div>
+      `;
+          })
+          .join("");
+      }
+
+      // ─── DELETE HISTORY ───────────────────────────────────────────
+      function deleteHistory(id) {
+        history = history.filter((h) => h.id !== id);
+        localStorage.setItem("xchange-history", JSON.stringify(history));
+        renderHistory();
+      }
+
+      // ─── INIT ─────────────────────────────────────────────────────
+      document.addEventListener("DOMContentLoaded", () => {
+        // Fetch rates
+        fetchRates();
+
+        // Currency change
+        document.getElementById("fromAmount").addEventListener("input", () => {
+          convert();
+        });
+
         document
-          .querySelectorAll(".currency-btn")
-          .forEach((b) => b.classList.remove("active"));
-        btn.classList.add("active");
-        currency = btn.dataset.currency;
-        renderPlans(true);
-      });
+          .getElementById("fromCurrency")
+          .addEventListener("change", () => {
+            convert();
+          });
 
-      // ─── BILLING TOGGLE ──────────────────────────────────────────
-      document.querySelectorAll(".billing-btn").forEach((btn) => {
-        btn.addEventListener("click", () => {
-          document
-            .querySelectorAll(".billing-btn")
-            .forEach((b) => b.classList.remove("active"));
-          btn.classList.add("active");
-          billing = btn.dataset.billing;
-          renderPlans(true);
+        document.getElementById("toCurrency").addEventListener("change", () => {
+          convert();
         });
-      });
 
-      // ─── THEME TOGGLE ────────────────────────────────────────────
-      const themeBtn = document.getElementById("themeBtn");
-      themeBtn.addEventListener("click", () => {
-        document.body.classList.toggle("light");
-        themeBtn.textContent = document.body.classList.contains("light")
-          ? "☾"
-          : "☀";
-      });
+        // Swap button
+        document
+          .getElementById("swapBtn")
+          .addEventListener("click", swapCurrencies);
 
-      // ─── FAQ ACCORDION ───────────────────────────────────────────
-      document.querySelectorAll(".faq-item").forEach((item) => {
-        item.querySelector(".faq-q").addEventListener("click", () => {
-          const wasOpen = item.classList.contains("open");
-          document
-            .querySelectorAll(".faq-item")
-            .forEach((i) => i.classList.remove("open"));
-          if (!wasOpen) item.classList.add("open");
+        // Save to history on conversion complete
+        document
+          .getElementById("toAmount")
+          .addEventListener("change", saveToHistory);
+
+        // Theme toggle
+        document.getElementById("themeBtn").addEventListener("click", () => {
+          document.body.classList.toggle("light");
+          document.getElementById("themeBtn").textContent =
+            document.body.classList.contains("light") ? "☾" : "☀";
         });
+
+        // Favorites toggle
+        document
+          .getElementById("showFavoritesOnly")
+          .addEventListener("click", () => {
+            showFavoritesOnly = !showFavoritesOnly;
+            document.getElementById("showFavoritesOnly").style.opacity =
+              showFavoritesOnly ? "1" : "0.6";
+            renderWatchlist();
+          });
+
+        // Clear history
+        document
+          .getElementById("clearHistory")
+          .addEventListener("click", () => {
+            if (confirm("Clear all history?")) {
+              history = [];
+              localStorage.removeItem("xchange-history");
+              renderHistory();
+            }
+          });
+
+        // Render initial UI
+        renderHistory();
       });
 
-      // ─── INIT ────────────────────────────────────────────────────
-      renderPlans(false); // Render immediately with fallback
-      fetchRates(); // Then fetch live rates and re-render
-
-      // Auto-refresh every 5 minutes
-      setInterval(fetchRates, 5 * 60 * 1000);
+      // Auto-refresh rates every 60 seconds
+      setInterval(fetchRates, 60 * 1000);
     </script>
   </body>
 </html>
